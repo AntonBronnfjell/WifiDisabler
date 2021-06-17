@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         new AppUpdater(this).setUpdateFrom(UpdateFrom.JSON)
-                .setUpdateJSON("https://github.com/AntonBronnfjell/WifiDisabler/tree/main/app/update-changelog.json")
+                .setUpdateJSON("https://raw.githubusercontent.com/AntonBronnfjell/WifiDisabler/master/app/update-changelog.json")
                 .setTitleOnUpdateAvailable("Update available")
                 .setContentOnUpdateAvailable("Check out the latest version!")
                 .setTitleOnUpdateNotAvailable("Update not available")
