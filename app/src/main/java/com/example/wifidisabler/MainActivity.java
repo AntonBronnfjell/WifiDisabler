@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
         ProgressBar progressBar = findViewById(R.id.progressBarVersion);
         progressBar.setVisibility(View.VISIBLE);
-        int image = R.drawable.ic_launcher_foreground;
+        int image = R.mipmap.ic_launcher_foreground;
 
         TextView textView = findViewById(R.id.textViewLog);
         textView.setText("Checking Version...");
@@ -290,18 +290,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.JSON)
-                .setUpdateJSON("https://raw.githubusercontent.com/javiersantos/AppUpdater/master/app/update-changelog.json")
+        AppUpdater appUpdater = new AppUpdater(this);
+        appUpdater.setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("https://github.com/AntonBronnfjell/WifiDisabler/tree/main/app/update-changelog.json")
                 .setTitleOnUpdateAvailable("Update available")
-                .setContentOnUpdateAvailable("Check out the latest version available of my app!")
+                .setContentOnUpdateAvailable("Check out the latest version!")
                 .setTitleOnUpdateNotAvailable("Update not available")
                 .setContentOnUpdateNotAvailable("No update available. Check for updates again later!")
-                .setButtonUpdate("Update now?")
+                .setButtonUpdate("Update now")
 	            .setButtonDismiss("Maybe later")
-                .setButtonDoNotShowAgain("Huh, not interested")
-	            .setIcon(R.drawable.ic_update) // Notification icon
-                .setCancelable(false) // Dialog could not be dismissable
+	            .setIcon(R.drawable.ic_update)
+                .setCancelable(false)
                 .start();
 
         imageViewVersion.startAnimation(anim_out);
