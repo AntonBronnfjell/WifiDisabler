@@ -1,10 +1,9 @@
 {
-  "latestVersion": "1.0b",
-  "latestVersionCode": 1,
+  "latestVersion": "1.0.1b",
+  "latestVersionCode": 2,
   "url": "https://github.com/AntonBronnfjell/WifiDisabler/releases",
   "releaseNotes": [
-    "- First evolution",
-    "- Second evolution",
-    "- Bug fixes"
+    "- Bug fixes",
+    "- Improvement"
   ]
 }
