@@ -2,7 +2,6 @@ package com.example.wifidisabler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +22,11 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewLANStatus = findViewById(R.id.lan_status);
 
         Switch switchWifi = findViewById(R.id.switchWifi);
+
+        TextView textViewVersion = findViewById(R.id.version_status);
 
         if (isWifiConnected()) {
             imageViewWifi.setImageResource(R.drawable.ic_wifi_on);
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         refreshSwitch();
+
+        textViewVersion.setText(BuildConfig.VERSION_NAME);
     }
 
     public void disableWifi(View view) {
@@ -251,6 +259,60 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void refreshCardVersion (View view) {
+        ImageView imageViewVersion = findViewById(R.id.version_img);
+        //TextView textViewVersionDescription = findViewById(R.id.version_description);
+
+        ProgressBar progressBar = findViewById(R.id.progressBarVersion);
+        progressBar.setVisibility(View.VISIBLE);
+        int image = R.drawable.ic_launcher_foreground;
+
+        TextView textView = findViewById(R.id.textViewLog);
+        textView.setText("Checking Version...");
+
+        final Animation anim_out = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
+        final Animation anim_in  = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
+        anim_out.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
+            @Override public void onAnimationEnd(Animation animation)
+            {
+                imageViewVersion.setImageResource(image);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override public void onAnimationStart(Animation animation) {}
+                    @Override public void onAnimationRepeat(Animation animation) {}
+                    @Override public void onAnimationEnd(Animation animation) {}
+                });
+                imageViewVersion.startAnimation(anim_in);
+            }
+        });
+
+        new AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("https://raw.githubusercontent.com/javiersantos/AppUpdater/master/app/update-changelog.json")
+                .setTitleOnUpdateAvailable("Update available")
+                .setContentOnUpdateAvailable("Check out the latest version available of my app!")
+                .setTitleOnUpdateNotAvailable("Update not available")
+                .setContentOnUpdateNotAvailable("No update available. Check for updates again later!")
+                .setButtonUpdate("Update now?")
+	            .setButtonDismiss("Maybe later")
+                .setButtonDoNotShowAgain("Huh, not interested")
+	            .setIcon(R.drawable.ic_update) // Notification icon
+                .setCancelable(false) // Dialog could not be dismissable
+                .start();
+
+        imageViewVersion.startAnimation(anim_out);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText("Waiting...");
+            }
+        }, 2000);
     }
 
     private Boolean isNetworkAvailable() {

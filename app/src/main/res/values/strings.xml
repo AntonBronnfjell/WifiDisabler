@@ -2,6 +2,7 @@
     <string name="app_name">Wifi Disabler</string>
     <string name="wifi_status_title">Wifi Status</string>
     <string name="lan_status_title">LAN Status</string>
+    <string name="version_title">Version</string>
 
     <string name="service_status_on">On</string>
     <string name="service_status_off">Off</string>
@@ -13,5 +14,8 @@
     <string name="lan_status_disabled">LAN Disabled</string>
     <string name="lan_status_active">LAN Active</string>
     <string name="lan_status_due">LAN Connection Issues</string>
+
+    <string name="version_status_lastest">Lastest</string>
+    <string name="version_status_new">New Version Found</string>
 
 </resources>
