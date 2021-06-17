@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Wifi Disabler</string>
+    <string name="wifi_status_title">Wifi Status</string>
+    <string name="lan_status_title">LAN Status</string>
+
+    <string name="service_status_on">On</string>
+    <string name="service_status_off">Off</string>
+    <string name="service_status_due">-</string>
+
+    <string name="wifi_status_disabled">Wifi Disabled</string>
+    <string name="wifi_status_active">Wifi Active</string>
+    <string name="wifi_status_due">Wifi App Issues</string>
+    <string name="lan_status_disabled">LAN Disabled</string>
+    <string name="lan_status_active">LAN Active</string>
+    <string name="lan_status_due">LAN Connection Issues</string>
+
+</resources>
