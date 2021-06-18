@@ -23,7 +23,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.AppUpdaterUtils;
+import com.github.javiersantos.appupdater.enums.AppUpdaterError;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
+import com.github.javiersantos.appupdater.objects.Update;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -163,12 +167,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         imageViewLAN.startAnimation(anim_out);
-        progressBar.setVisibility(View.INVISIBLE);
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 textView.setText("Waiting...");
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }, 2000);
     }
@@ -228,14 +232,99 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         imageViewWifi.startAnimation(anim_out);
-        progressBar.setVisibility(View.INVISIBLE);
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 textView.setText("Waiting...");
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }, 2000);
+    }
+
+    public void refreshCardVersion (View view) {
+        ImageView imageViewVersion = findViewById(R.id.version_img);
+        //TextView textViewVersionDescription = findViewById(R.id.version_description);
+
+        ProgressBar progressBar = findViewById(R.id.progressBarVersion);
+        progressBar.setVisibility(View.VISIBLE);
+        int image = R.mipmap.ic_launcher_foreground;
+
+        TextView textView = findViewById(R.id.textViewLog);
+        textView.setText("Working...");
+
+        Snackbar.make(view, "Looking for a new version...", Snackbar.LENGTH_LONG)
+                .show();
+
+        final Animation anim_out = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
+        final Animation anim_in  = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
+        anim_out.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
+            @Override public void onAnimationEnd(Animation animation)
+            {
+                imageViewVersion.setImageResource(image);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override public void onAnimationStart(Animation animation) {}
+                    @Override public void onAnimationRepeat(Animation animation) {}
+                    @Override public void onAnimationEnd(Animation animation) {}
+                });
+                imageViewVersion.startAnimation(anim_in);
+            }
+        });
+
+        new AppUpdaterUtils(this).setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("https://raw.githubusercontent.com/AntonBronnfjell/WifiDisabler/master/app/update-changelog.json")
+                .withListener(new AppUpdaterUtils.UpdateListener() {
+                    @Override
+                    public void onSuccess(Update update, Boolean isUpdateAvailable) {
+                        if(isUpdateAvailable) {
+                            Snackbar.make(view, "Text label", Snackbar.LENGTH_LONG)
+                                    .setAction("Update", new View.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(View v) {
+                                            new AppUpdater(MainActivity.this).setUpdateFrom(UpdateFrom.JSON)
+                                                    .setUpdateJSON("https://raw.githubusercontent.com/AntonBronnfjell/WifiDisabler/master/app/update-changelog.json")
+                                                    .start();
+                                        }
+                                    })
+                                    .show();
+                        }
+                        else {
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Snackbar.make(view, "You're on date!", Snackbar.LENGTH_LONG)
+                                            .show();
+                                }
+                            }, 2000);
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(AppUpdaterError error) {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "Something went wrong.", Snackbar.LENGTH_LONG)
+                                        .show();
+                            }
+                        }, 2000);
+                    }
+                })
+                .start();
+
+        imageViewVersion.startAnimation(anim_out);
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText("Waiting...");
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        }, 4000);
     }
 
     public void serviceSwitch (View view) {
@@ -259,58 +348,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public void refreshCardVersion (View view) {
-        ImageView imageViewVersion = findViewById(R.id.version_img);
-        //TextView textViewVersionDescription = findViewById(R.id.version_description);
-
-        ProgressBar progressBar = findViewById(R.id.progressBarVersion);
-        progressBar.setVisibility(View.VISIBLE);
-        int image = R.mipmap.ic_launcher_foreground;
-
-        TextView textView = findViewById(R.id.textViewLog);
-        textView.setText("Checking Version...");
-
-        final Animation anim_out = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
-        final Animation anim_in  = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
-        anim_out.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override public void onAnimationStart(Animation animation) {}
-            @Override public void onAnimationRepeat(Animation animation) {}
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                imageViewVersion.setImageResource(image);
-                anim_in.setAnimationListener(new Animation.AnimationListener() {
-                    @Override public void onAnimationStart(Animation animation) {}
-                    @Override public void onAnimationRepeat(Animation animation) {}
-                    @Override public void onAnimationEnd(Animation animation) {}
-                });
-                imageViewVersion.startAnimation(anim_in);
-            }
-        });
-
-        new AppUpdater(this).setUpdateFrom(UpdateFrom.JSON)
-                .setUpdateJSON("https://raw.githubusercontent.com/AntonBronnfjell/WifiDisabler/master/app/update-changelog.json")
-                .setTitleOnUpdateAvailable("Update available")
-                .setContentOnUpdateAvailable("Check out the latest version!")
-                .setTitleOnUpdateNotAvailable("Update not available")
-                .setContentOnUpdateNotAvailable("No update available. Check for updates again later!")
-                .setButtonUpdate("Update now")
-	            .setButtonDismiss("Maybe later")
-	            .setIcon(R.drawable.ic_update)
-                .setCancelable(false)
-                .start();
-
-        imageViewVersion.startAnimation(anim_out);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                textView.setText("Waiting...");
-            }
-        }, 2000);
     }
 
     private Boolean isNetworkAvailable() {
