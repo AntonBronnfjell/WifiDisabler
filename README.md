@@ -1,0 +1,3 @@
+The purpose of this app / project is to resolve issues with older Android devices when plugging the Ethernet adapter when WiFi is active. Older Android devices (<8.X versions and some newer devices) are unable to switch from WiFi to Ethernet. This app solves this and creates a service to automatically detect new connection changes.
+
+This project has been supported by a manufacturing company to fix issues with their Navori devices and chart screens at production lines, specially when the Ethernet falls down
